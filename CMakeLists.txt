@@ -21,13 +21,16 @@ set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 add_library(sim ${SOURCE})
 target_include_directories(sim PUBLIC ${PROJECT_INCLUDE_DIR})
 
-add_executable(runner ${PROJECT_SOURCE_DIR}/src/main.cpp)
-target_link_libraries(runner sim)
-target_include_directories(runner PRIVATE ${PROJECT_INCLUDE_DIR})
 
-install(TARGETS runner
+set(TARGET_NAME runner)
+add_executable(${TARGET_NAME} ${PROJECT_SOURCE_DIR}/src/main.cpp)
+
+target_link_libraries(${TARGET_NAME} sim)
+target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_INCLUDE_DIR})
+
+install(TARGETS ${TARGET_NAME}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        COMPONENT runner)
+        COMPONENT ${TARGET_NAME})
 
 enable_testing()
 add_subdirectory(tests)
