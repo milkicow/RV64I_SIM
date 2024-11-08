@@ -6,7 +6,7 @@
 
 namespace decoder {
 
-constexpr size_t g_opcode_num = 1 << 7;
+constexpr size_t kOpcodeNum = 1 << 7;
 
 template <size_t b>
 uint64_t bit(uint64_t value) {
@@ -32,16 +32,16 @@ uint64_t sbits(uint64_t value) {
 }
 
 template <size_t high_bit>
-uint64_t sext(uint64_t value) { // == sbits<high_bit , 0>
-   static_assert(high_bit < 64);
+uint64_t sext(uint64_t value) {  // == sbits<high_bit , 0>
+    static_assert(high_bit < 64);
 
-   return static_cast<int64_t>(value) << (63 - high_bit) >> (63 - high_bit);
+    return static_cast<int64_t>(value) << (63 - high_bit) >> (63 - high_bit);
 }
 
 class Decoder final {
    private:
-    using mask_t = uint32_t;
-    static const std::array<mask_t, g_opcode_num> m_masks;
+    static const std::array<instruction::instr_t, kOpcodeNum> m_mask;
+    enum class Match : instruction::instr_t;
 
     static void decode_r_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
     static void decode_i_type(instruction::instr_t raw_instr, instruction::EncInstr &enc_instr);
