@@ -11,6 +11,7 @@ constexpr size_t g_regfile_size = 32;
 
 using addr_t = uint64_t;
 
+
 using reg_t = addr_t;
 using signed_reg_t = int64_t;
 

@@ -12,14 +12,14 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(SOURCE ${PROJECT_SOURCE_DIR}/src/decoder.cpp 
-           ${PROJECT_SOURCE_DIR}/src/instruction.cpp
            ${PROJECT_SOURCE_DIR}/src/main.cpp
            ${PROJECT_SOURCE_DIR}/src/executor.cpp
            ${PROJECT_SOURCE_DIR}/src/hart.cpp)
-        
-add_executable(sim ${SOURCE})
-target_include_directories(sim PRIVATE include)
 
-install(TARGETS sim
+set(TARGET_NAME sim)
+add_executable(${TARGET_NAME} ${SOURCE})
+target_include_directories(${TARGET_NAME} PRIVATE include)
+
+install(TARGETS ${TARGET_NAME}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        COMPONENT sim)
+        COMPONENT ${TARGET_NAME})
