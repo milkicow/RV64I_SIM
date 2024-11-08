@@ -4,6 +4,8 @@
 
 #include "memory.hpp"
 #include "regfile.hpp"
+#include <cstdint>
+
 
 namespace hart {
 

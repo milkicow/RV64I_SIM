@@ -6,6 +6,8 @@
 #include <cstddef>
 #include <stdexcept>
 #include <string>
+#include <cstdint>
+#include <cstring>
 
 namespace memory {
 
@@ -14,7 +16,7 @@ class Memory {
     size_t m_size;
     std::byte *m_mem;
 
-    static constexpr size_t default_mem_size = 0x100000; // 400kB 
+    static constexpr size_t default_mem_size = 0x100000; // 400kB
 
    public:
     Memory(size_t size = default_mem_size) : m_size(size) {

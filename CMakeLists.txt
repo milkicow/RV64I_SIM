@@ -11,15 +11,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(SOURCE ${PROJECT_SOURCE_DIR}/src/decoder.cpp 
-           ${PROJECT_SOURCE_DIR}/src/main.cpp
+set(SOURCE ${PROJECT_SOURCE_DIR}/src/decoder.cpp
            ${PROJECT_SOURCE_DIR}/src/executor.cpp
-           ${PROJECT_SOURCE_DIR}/src/hart.cpp)
+           ${PROJECT_SOURCE_DIR}/src/hart.cpp
+           )
 
-set(TARGET_NAME sim)
-add_executable(${TARGET_NAME} ${SOURCE})
-target_include_directories(${TARGET_NAME} PRIVATE include)
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
-install(TARGETS ${TARGET_NAME}
+add_library(sim ${SOURCE})
+target_include_directories(sim PUBLIC ${PROJECT_INCLUDE_DIR})
+
+add_executable(runner ${PROJECT_SOURCE_DIR}/src/main.cpp)
+target_link_libraries(runner sim)
+target_include_directories(runner PRIVATE ${PROJECT_INCLUDE_DIR})
+
+install(TARGETS runner
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        COMPONENT ${TARGET_NAME})
+        COMPONENT runner)
+
+enable_testing()
+add_subdirectory(tests)
