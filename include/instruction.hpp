@@ -71,7 +71,7 @@ enum class InstrId {
     JAL,
 };
 
-struct EncInstr final {
+struct EncInstr {
     InstrId id;
 
     uint8_t rd = 0;

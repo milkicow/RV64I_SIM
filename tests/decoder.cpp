@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -6,165 +7,225 @@
 
 namespace instruction {
 
-struct DecoderTest : public testing::Test {
-    EncInstr enc_insn{};
+struct ExpectedEncInstr : EncInstr {
+    ExpectedEncInstr(InstrId id_, uint8_t rd_, uint8_t rs1_,
+                     uint8_t rs2_, uint32_t imm_) :
+                     EncInstr(id_, rd_, rs1_, rs2_, imm_) {}
 
-    bool check_inst_decode(int32_t opcode, InstrId expected_opcode) {
-        decoder::Decoder::decode_instruction(opcode, enc_insn);
-        return enc_insn.id == expected_opcode;
+    ExpectedEncInstr(InstrId id_) :
+                     EncInstr(id_, 0, 0, 0, 0) {}
+
+    ExpectedEncInstr(InstrId id_, uint32_t imm_) : EncInstr(id_, 0, 0, 0, imm_) {}
+    ExpectedEncInstr() : EncInstr() {}
+
+    constexpr bool operator==(const EncInstr& rhs)
+    {
+        return (id == rhs.id) && (imm == rhs.imm)  && (rd == rhs.rd) &&
+               (rs1 == rhs.rs1) && ( rs1 == rhs.rs1);
     }
 };
 
+struct DecoderTest : public testing::Test {
+    EncInstr enc_insn{};
+    ExpectedEncInstr expected_insn{};
+    bool check_inst_decode(int32_t opcode, InstrId expected_opcode) {
+        decoder::Decoder::decode_instruction(opcode, enc_insn);
+        return (enc_insn.id == expected_opcode);
+    }
+
+    bool check_inst_decode(int32_t opcode, ExpectedEncInstr expected_inst) {
+        decoder::Decoder::decode_instruction(opcode, enc_insn);
+        return (enc_insn == expected_inst);
+    }
+};
 
 TEST_F(DecoderTest, LUI) {
-    EXPECT_EQ(check_inst_decode(0x37, InstrId::LUI), true);
+    expected_insn = ExpectedEncInstr(InstrId::LUI);
+    EXPECT_EQ(check_inst_decode(0x37, expected_insn), true);
 }
 
 TEST_F(DecoderTest, ADD) {
-    EXPECT_EQ(check_inst_decode(0x33, InstrId::ADD), true);
+    expected_insn = ExpectedEncInstr(InstrId::ADD);
+    EXPECT_EQ(check_inst_decode(0x33, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SUB) {
-    EXPECT_EQ(check_inst_decode(0x40000033, InstrId::SUB), true);
+    expected_insn = ExpectedEncInstr(InstrId::SUB);
+    EXPECT_EQ(check_inst_decode(0x40000033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLL) {
-    EXPECT_EQ(check_inst_decode(0x1033, InstrId::SLL), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLL);
+    EXPECT_EQ(check_inst_decode(0x1033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLT) {
-    EXPECT_EQ(check_inst_decode(0x2033, InstrId::SLT), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLT);
+    EXPECT_EQ(check_inst_decode(0x2033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLTU) {
-    EXPECT_EQ(check_inst_decode(0x3033, InstrId::SLTU), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLTU);
+    EXPECT_EQ(check_inst_decode(0x3033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, XOR) {
-    EXPECT_EQ(check_inst_decode(0x4033, InstrId::XOR), true);
+    expected_insn = ExpectedEncInstr(InstrId::XOR);
+    EXPECT_EQ(check_inst_decode(0x4033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRL) {
-    EXPECT_EQ(check_inst_decode(0x5033, InstrId::SRL), true);
+    expected_insn = ExpectedEncInstr(InstrId::SRL);
+    EXPECT_EQ(check_inst_decode(0x5033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRA) {
-    EXPECT_EQ(check_inst_decode(0x40005033, InstrId::SRA), true);
+    expected_insn = ExpectedEncInstr(InstrId::SRA);
+    EXPECT_EQ(check_inst_decode(0x40005033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, OR) {
-    EXPECT_EQ(check_inst_decode(0x6033, InstrId::OR), true);
+    expected_insn = ExpectedEncInstr(InstrId::OR);
+    EXPECT_EQ(check_inst_decode(0x6033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, AND) {
-    EXPECT_EQ(check_inst_decode(0x7033, InstrId::AND), true);
+    expected_insn = ExpectedEncInstr(InstrId::AND);
+    EXPECT_EQ(check_inst_decode(0x7033, expected_insn), true);
 }
 
 TEST_F(DecoderTest, ADDW) {
-    EXPECT_EQ(check_inst_decode(0x3b, InstrId::ADDW), true);
+    expected_insn = ExpectedEncInstr(InstrId::ADDW);
+    EXPECT_EQ(check_inst_decode(0x3b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLLW) {
-    EXPECT_EQ(check_inst_decode(0x103b, InstrId::SLLW), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLLW);
+    EXPECT_EQ(check_inst_decode(0x103b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRLW) {
-    EXPECT_EQ(check_inst_decode(0x503b, InstrId::SRLW), true);
+    expected_insn = ExpectedEncInstr(InstrId::SRLW);
+    EXPECT_EQ(check_inst_decode(0x503b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SUBW) {
-    EXPECT_EQ(check_inst_decode(0x4000003b, InstrId::SUBW), true);
+    expected_insn = ExpectedEncInstr(InstrId::SUBW);
+    EXPECT_EQ(check_inst_decode(0x4000003b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRAW) {
-    EXPECT_EQ(check_inst_decode(0x4000503b, InstrId::SRAW), true);
+    expected_insn = ExpectedEncInstr(InstrId::SRAW);
+    EXPECT_EQ(check_inst_decode(0x4000503b, expected_insn), true);
 }
-
 
 
 
 TEST_F(DecoderTest, JALR) {
-    EXPECT_EQ(check_inst_decode(0x67, InstrId::JALR), true);
+    expected_insn = ExpectedEncInstr(InstrId::JALR);
+    EXPECT_EQ(check_inst_decode(0x67, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LB) {
-    EXPECT_EQ(check_inst_decode(0x3, InstrId::LB), true);
+    expected_insn = ExpectedEncInstr(InstrId::LB);
+    EXPECT_EQ(check_inst_decode(0x3, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LH) {
-    EXPECT_EQ(check_inst_decode(0x1003, InstrId::LH), true);
+    expected_insn = ExpectedEncInstr(InstrId::LH);
+    EXPECT_EQ(check_inst_decode(0x1003, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LW) {
-    EXPECT_EQ(check_inst_decode(0x2003, InstrId::LW), true);
+    expected_insn = ExpectedEncInstr(InstrId::LW);
+    EXPECT_EQ(check_inst_decode(0x2003, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LBU) {
-    EXPECT_EQ(check_inst_decode(0x4003, InstrId::LBU), true);
+    expected_insn = ExpectedEncInstr(InstrId::LBU);
+    EXPECT_EQ(check_inst_decode(0x4003, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LHU) {
-    EXPECT_EQ(check_inst_decode(0x5003, InstrId::LHU), true);
+    expected_insn = ExpectedEncInstr(InstrId::LHU);
+    EXPECT_EQ(check_inst_decode(0x5003, expected_insn), true);
 }
 
 TEST_F(DecoderTest, ADDI) {
-    EXPECT_EQ(check_inst_decode(0x13, InstrId::ADDI), true);
+    expected_insn = ExpectedEncInstr(InstrId::ADDI);
+    EXPECT_EQ(check_inst_decode(0x13, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLTI) {
-    EXPECT_EQ(check_inst_decode(0x2013, InstrId::SLTI), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLTI);
+    EXPECT_EQ(check_inst_decode(0x2013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLTIU) {
-    EXPECT_EQ(check_inst_decode(0x3013, InstrId::SLTIU), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLTIU);
+    EXPECT_EQ(check_inst_decode(0x3013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, XORI) {
-    EXPECT_EQ(check_inst_decode(0x4013, InstrId::XORI), true);
+    expected_insn = ExpectedEncInstr(InstrId::XORI);
+    EXPECT_EQ(check_inst_decode(0x4013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, ORI) {
-    EXPECT_EQ(check_inst_decode(0x6013, InstrId::ORI), true);
+    expected_insn = ExpectedEncInstr(InstrId::ORI);
+    EXPECT_EQ(check_inst_decode(0x6013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, ANDI) {
-    EXPECT_EQ(check_inst_decode(0x7013, InstrId::ANDI), true);
+    expected_insn = ExpectedEncInstr(InstrId::ANDI);
+    EXPECT_EQ(check_inst_decode(0x7013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LWU) {
-    EXPECT_EQ(check_inst_decode(0x6003, InstrId::LWU), true);
+    expected_insn = ExpectedEncInstr(InstrId::LWU);
+    EXPECT_EQ(check_inst_decode(0x6003, expected_insn), true);
 }
 
 TEST_F(DecoderTest, LD) {
-    EXPECT_EQ(check_inst_decode(0x3003, InstrId::LD), true);
+    expected_insn = ExpectedEncInstr(InstrId::LD);
+    EXPECT_EQ(check_inst_decode(0x3003, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLLI) {
-    EXPECT_EQ(check_inst_decode(0x1013, InstrId::SLLI), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLLI);
+    EXPECT_EQ(check_inst_decode(0x1013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRLI) {
-    EXPECT_EQ(check_inst_decode(0x5013, InstrId::SRLI), true);
+    expected_insn = ExpectedEncInstr(InstrId::SRLI);
+    EXPECT_EQ(check_inst_decode(0x5013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRAI) {
-    EXPECT_EQ(check_inst_decode(0x40005013, InstrId::SRAI), true);
+    // The first 6 bits are set at 0100000 (1024) for distinction with SRLI
+    expected_insn = ExpectedEncInstr(InstrId::SRAI, (int32_t)1024);
+    EXPECT_EQ(check_inst_decode(0x40005013, expected_insn), true);
 }
 
 TEST_F(DecoderTest, ADDIW) {
-    EXPECT_EQ(check_inst_decode(0x1b, InstrId::ADDIW), true);
+    expected_insn = ExpectedEncInstr(InstrId::ADDIW);
+    EXPECT_EQ(check_inst_decode(0x1b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SLLIW) {
-    EXPECT_EQ(check_inst_decode(0x101b, InstrId::SLLIW), true);
+    expected_insn = ExpectedEncInstr(InstrId::SLLIW);
+    EXPECT_EQ(check_inst_decode(0x101b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRLIW) {
-    EXPECT_EQ(check_inst_decode(0x501b, InstrId::SRLIW), true);
+    expected_insn = ExpectedEncInstr(InstrId::SRLIW);
+    EXPECT_EQ(check_inst_decode(0x501b, expected_insn), true);
 }
 
 TEST_F(DecoderTest, SRAIW) {
-    EXPECT_EQ(check_inst_decode(0x4000501b, InstrId::SRAIW), true);
+    // The first 6 bits are set at 0100000 (1024) for distinction with SRLIW
+    expected_insn = ExpectedEncInstr(InstrId::SRAIW, 1024);
+    EXPECT_EQ(check_inst_decode(0x4000501b, expected_insn), true);
 }
 
 int main(int argc, char **argv) {
