@@ -12,8 +12,8 @@ namespace decoder {
 const std::array<instruction::instr_t, kOpcodeNum> Decoder::m_mask{{
     [0b0000011] = 0x707f,  // LOAD
     // [0b0001111] = 0x707f,      // MISC-MEM
-    [0b0010011] = 0xfc00707f,  // OP-IMM
-    [0b0011011] = 0xfe00707f,  // OP-IMM-32
+    [0b0010011] = 0x707f,  // OP-IMM
+    [0b0011011] = 0x707f,  // OP-IMM-32
     [0b0010111] = 0x7f,        // AUIPC
     [0b0100011] = 0x707f,      // STORE
     [0b0110011] = 0xfe00707f,  // OP
@@ -69,14 +69,14 @@ enum class Decoder::Match : instruction::instr_t {  // MATCH
     ORI = 0x6013,
     XORI = 0x4013,
     SLLI = 0x1013,
-    SRLI = 0x5013,
-    SRAI = 0x40005013,
+    SRI = 0x5013, // combination of SRLI and SRAI
+    // SRAI = 0x5013,
 
     // OP-IMM-32
     ADDIW = 0x1b,
     SLLIW = 0x101b,
-    SRLIW = 0x501b,
-    SRAIW = 0x4000501b,
+    SRIW = 0x501b,  // combination of SRLIW and SRAIW
+    // SRAIW = 0x4000501b,
 
     // OP
     ADD = 0x33,
@@ -303,14 +303,13 @@ void Decoder::decode_instruction(instruction::instr_t raw_instr,
             decode_i_type(raw_instr, enc_instr);
             break;
         }
-        case Match::SRLI: {
-            enc_instr.id = instruction::InstrId::SRLI;
+        case Match::SRI: {
             decode_i_type(raw_instr, enc_instr);
-            break;
-        }
-        case Match::SRAI: {
-            enc_instr.id = instruction::InstrId::SRAI;
-            decode_i_type(raw_instr, enc_instr);
+            if (bit<30>(enc_instr.imm)) {
+                enc_instr.id = instruction::InstrId::SRAI;
+            } else {
+                enc_instr.id = instruction::InstrId::SRLI;
+            }
             break;
         }
         case Match::ADDIW: {
@@ -323,14 +322,13 @@ void Decoder::decode_instruction(instruction::instr_t raw_instr,
             decode_i_type(raw_instr, enc_instr);
             break;
         }
-        case Match::SRLIW: {
-            enc_instr.id = instruction::InstrId::SRLIW;
+        case Match::SRIW: {
             decode_i_type(raw_instr, enc_instr);
-            break;
-        }
-        case Match::SRAIW: {
-            enc_instr.id = instruction::InstrId::SRAIW;
-            decode_i_type(raw_instr, enc_instr);
+            if (bit<30>(enc_instr.imm)) {
+                enc_instr.id = instruction::InstrId::SRAIW;
+            } else {
+                enc_instr.id = instruction::InstrId::SRLIW;
+            }
             break;
         }
 
