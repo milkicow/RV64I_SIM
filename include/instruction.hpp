@@ -138,7 +138,7 @@ constexpr std::array<std::string_view, 49> InstrName{{
     "JAL",
 }};
 
-struct EncInstr final {
+struct EncInstr {
     InstrId id;
 
     uint8_t rd = 0;

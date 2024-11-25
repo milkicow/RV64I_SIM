@@ -9,6 +9,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <cstdint>
+#include <cstring>
 
 #include "fmt/format.h"
 #include "logger.hpp"

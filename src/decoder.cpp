@@ -308,7 +308,7 @@ void Decoder::decode_instruction(instruction::instr_t raw_instr,
         }
         case Match::SRI: {
             decode_i_type(raw_instr, enc_instr);
-            if (bit<30>(enc_instr.imm)) {
+            if (bit<10>(enc_instr.imm)) {
                 enc_instr.id = instruction::InstrId::SRAI;
             } else {
                 enc_instr.id = instruction::InstrId::SRLI;
@@ -327,7 +327,7 @@ void Decoder::decode_instruction(instruction::instr_t raw_instr,
         }
         case Match::SRIW: {
             decode_i_type(raw_instr, enc_instr);
-            if (bit<30>(enc_instr.imm)) {
+            if (bit<10>(enc_instr.imm)) {
                 enc_instr.id = instruction::InstrId::SRAIW;
             } else {
                 enc_instr.id = instruction::InstrId::SRLIW;
@@ -421,7 +421,7 @@ void Decoder::decode_instruction(instruction::instr_t raw_instr,
     Logger &myLogger = Logger::getInstance();
     myLogger.message(
         Logger::severity_level::standard, "Decoder",
-        fmt::format("Match {} {:#08x}", instruction::InstrName[enc_instr.id], raw_instr));
+        fmt::format("Match {} {:#08x}\n", instruction::InstrName[enc_instr.id], raw_instr));
 
 } catch (const std::invalid_argument &e) {
     std::cerr << e.what() << std::endl;
