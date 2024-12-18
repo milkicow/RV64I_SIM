@@ -14,8 +14,8 @@ class TLB final {
         host_address_ptr_t host_address_ptr;
     };
 
-    static constexpr size_t kTlbBitSize = 8;
-    static constexpr size_t kTlbEntries = 1 << kTlbBitSize;  // 1 << 8 = 256, 256 * (8 + 8) == 4096
+    static constexpr size_t kTlbBitSize = 7;
+    static constexpr size_t kTlbEntries = 2 << kTlbBitSize;  // 2 << 7 = 256, 256 * (8 + 8) == 4096
 
    private:
     Entry m_table[kTlbEntries]{};  // sizeof PAGE = 0x1000

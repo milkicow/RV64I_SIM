@@ -28,6 +28,4 @@ constexpr size_t kPageSizeMask = kPageSize - 1;
 
 constexpr size_t kVPNBitSize = 9;
 
-uint64_t my_bits(uint64_t value, size_t high_bit, size_t low_bit);
-
 } // namespace sim

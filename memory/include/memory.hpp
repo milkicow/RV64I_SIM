@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -18,10 +19,14 @@
 
 namespace sim {
 
+uint64_t my_bits(uint64_t value, size_t high_bit, size_t low_bit);
+
 class Memory {  // PhysMemory
    private:
     size_t m_size;
     uint8_t *m_mem;
+
+    size_t m_page_counter = 0;
 
     static constexpr size_t default_mem_size = 0x400000;  // 4 GB
 
@@ -42,6 +47,14 @@ class Memory {  // PhysMemory
         //                              static_cast<void *>(m_mem + m_size)));
     }
 
+    uint8_t *get_mem() { return m_mem; }
+
+    physical_address_t getPage() {
+        return reinterpret_cast<physical_address_t>(m_mem + 0x1000 * m_page_counter++);
+    }
+    void reservePages(size_t page_num) { m_page_counter += page_num; }
+    size_t getPageCounter() { return m_page_counter; }
+
     Memory(const Memory &memory) = delete;
     Memory &operator=(const Memory &memory) = delete;
 
@@ -51,10 +64,10 @@ class Memory {  // PhysMemory
     ~Memory() = default;
 
     template <typename ValType>
-    void load(virtual_address_t addr, uint64_t &value) const {
+    void load(physical_address_t addr, uint64_t &value) const {
         static_assert(std::is_integral_v<ValType>);
 
-        virtual_address_t addr_page_offset = addr & kPageSizeMask;
+        physical_address_t addr_page_offset = addr & kPageSizeMask;
         if (addr_page_offset + sizeof(ValType) > kPageSize) {
             std::runtime_error("Misaligned memory load");
         }
@@ -63,10 +76,10 @@ class Memory {  // PhysMemory
     }
 
     template <typename ValType>
-    void store(virtual_address_t addr, uint64_t value) {
+    void store(physical_address_t addr, uint64_t value) {
         static_assert(std::is_integral_v<ValType>);
 
-        virtual_address_t addr_page_offset = addr & kPageSizeMask;
+        physical_address_t addr_page_offset = addr & kPageSizeMask;
         if (addr_page_offset + sizeof(ValType) > kPageSize) {
             std::runtime_error("Misaligned memory store");
         }
@@ -84,8 +97,18 @@ class Memory {  // PhysMemory
 class MMU final {
    private:
     Memory &m_phys_memory;
-    reg_t m_satp_addr = 0x1000;  // FIXME: implement system registers: satp, status
-                                 // status register &
+    reg_t m_satp_addr = 0x10;  // FIXME: implement system registers: satp, status
+                               // status register &
+
+    size_t m_vpn2_size = 0;
+    size_t m_vpn1_size = 0;
+    size_t m_vpn0_size = 0;
+
+   public:
+    enum class Mode {
+        Bare,
+        Sv39,
+    };
 
    public:
     MMU(Memory &phys_memory) : m_phys_memory(phys_memory) {}
@@ -98,7 +121,11 @@ class MMU final {
 
     ~MMU() = default;
 
-    [[nodiscard]] physical_address_t translate(virtual_address_t virtual_address) const;
+    [[nodiscard]] physical_address_t translate(virtual_address_t virtual_address, Mode mode) const;
+    [[nodiscard]] reg_t getSATP() const { return m_satp_addr; };
+
+    void allocaPTEs(size_t vpn2_table_size, size_t vpn1_table_size, size_t vpn0_table_size);
+    void fillPTEs(virtual_address_t virtual_address);
 };
 
 }  // namespace sim

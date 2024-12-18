@@ -2,7 +2,7 @@
 
 #include <assert.h>
 
-#include "common_mem.hpp"
+#include "memory.hpp"
 
 namespace sim {
 
