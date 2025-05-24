@@ -10,7 +10,7 @@ namespace sim {
 
 using instr_t = uint32_t;
 
-// enum class InstrType : uint8_t { R, I, S, B, U, J };
+enum class InstrType : uint8_t { R, I, S, B, U, J };
 
 enum InstrId {
     // R - rype
@@ -148,6 +148,8 @@ constexpr std::array<std::string_view, 52> InstrName{{
     "NO_ID",
 }};
 
+static std::string reg_name(uint8_t reg) { return 'x' + std::to_string(reg); }
+
 struct EncInstr {
     InstrId id;
 
@@ -157,10 +159,63 @@ struct EncInstr {
 
     uint64_t imm = 0;
 
-    std::string format() {
+    InstrType instr_t;
+
+    std::string format() const {
+        switch (instr_t) {
+            case InstrType::R:
+                return format_R();
+            case InstrType::I:
+                return format_I();
+            case InstrType::B:
+                return format_B();
+            case InstrType::S:
+                return format_S();
+            case InstrType::U:
+                return format_U();
+            case InstrType::J:
+                return format_J();
+            default:
+                return "";
+        }
+    }
+
+    std::string format_R() const {
         std::ostringstream oss{};
-        oss << "Instruction: rd: " << +rd << " rs1: " << +rs1 << " rs2: " << +rs2 << " imm: " << imm
-            << " (" << static_cast<int64_t>(imm) << ")";
+        oss << InstrName[id] << ' ' << reg_name(rd) << ", " << reg_name(rs1) << ", "
+            << reg_name(rs2);
+        return oss.str();
+    }
+
+    std::string format_I() const {
+        std::ostringstream oss{};
+        oss << InstrName[id] << ' ' << reg_name(rd) << ", " << reg_name(rs1) << ", " << std::hex
+            << imm;
+        return oss.str();
+    }
+
+    std::string format_B() const {
+        std::ostringstream oss{};
+        oss << InstrName[id] << ' ' << reg_name(rs1) << ", " << reg_name(rs2) << ", " << std::hex
+            << imm;
+        return oss.str();
+    }
+
+    std::string format_S() const {
+        std::ostringstream oss{};
+        oss << InstrName[id] << ' ' << reg_name(rs2) << ", " << imm << '(' << reg_name(rs1) << ')';
+        return oss.str();
+    }
+
+    std::string format_U() const {
+        std::ostringstream oss{};
+        oss << InstrName[id] << ' ' << reg_name(rd) << ", " << std::hex << (imm >> 12);
+        return oss.str();
+    }
+
+    std::string format_J() const {
+        std::ostringstream oss{};
+        oss << InstrName[id] << ' ' << reg_name(rd) << ", " << std::hex << imm;
         return oss.str();
     }
 

@@ -61,7 +61,10 @@ class Memory {  // PhysMemory
     Memory(Memory &&memory) = delete;
     Memory &operator=(Memory &&memory) = delete;
 
-    ~Memory() = default;
+    ~Memory() {
+        munmap(m_mem, m_size);
+    }
+    // ~Memory() = default;
 
     template <typename ValType>
     void load(physical_address_t addr, uint64_t &value) const {

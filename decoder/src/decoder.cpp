@@ -156,36 +156,50 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         // R - type
         case Match::ADD: {
             enc_instr.id = InstrId::ADD;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SUB: {
             enc_instr.id = InstrId::SUB;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLL: {
             enc_instr.id = InstrId::SLL;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLT: {
             enc_instr.id = InstrId::SLT;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLTU: {
             enc_instr.id = InstrId::SLTU;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::XOR: {
             enc_instr.id = InstrId::XOR;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRL: {
             enc_instr.id = InstrId::SRL;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
@@ -196,36 +210,50 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         }
         case Match::OR: {
             enc_instr.id = InstrId::OR;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::AND: {
             enc_instr.id = InstrId::AND;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::ADDW: {
             enc_instr.id = InstrId::ADDW;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLLW: {
             enc_instr.id = InstrId::SLLW;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRLW: {
             enc_instr.id = InstrId::SRLW;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SUBW: {
             enc_instr.id = InstrId::SUBW;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRAW: {
             enc_instr.id = InstrId::SRAW;
+            enc_instr.instr_t = InstrType::R;
+
             decode_r_type(raw_instr, enc_instr);
             break;
         }
@@ -233,80 +261,112 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         // I - type
         case Match::JALR: {
             enc_instr.id = InstrId::JALR;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LB: {
             enc_instr.id = InstrId::LB;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LH: {
             enc_instr.id = InstrId::LH;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LW: {
             enc_instr.id = InstrId::LW;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LBU: {
             enc_instr.id = InstrId::LBU;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LHU: {
             enc_instr.id = InstrId::LHU;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::ADDI: {
             enc_instr.id = InstrId::ADDI;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLTI: {
             enc_instr.id = InstrId::SLTI;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLTIU: {
             enc_instr.id = InstrId::SLTIU;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::XORI: {
             enc_instr.id = InstrId::XORI;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::ORI: {
             enc_instr.id = InstrId::ORI;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::ANDI: {
             enc_instr.id = InstrId::ANDI;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LWU: {
             enc_instr.id = InstrId::LWU;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::LD: {
             enc_instr.id = InstrId::LD;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLLI: {
             enc_instr.id = InstrId::SLLI;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRI: {
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             if (bit<10>(enc_instr.imm)) {
                 enc_instr.id = InstrId::SRAI;
@@ -317,15 +377,21 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         }
         case Match::ADDIW: {
             enc_instr.id = InstrId::ADDIW;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SLLIW: {
             enc_instr.id = InstrId::SLLIW;
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             break;
         }
         case Match::SRIW: {
+            enc_instr.instr_t = InstrType::I;
+
             decode_i_type(raw_instr, enc_instr);
             if (bit<10>(enc_instr.imm)) {
                 enc_instr.id = InstrId::SRAIW;
@@ -338,21 +404,29 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         // S - type
         case Match::SB: {
             enc_instr.id = InstrId::SB;
+            enc_instr.instr_t = InstrType::S;
+
             decode_s_type(raw_instr, enc_instr);
             break;
         }
         case Match::SH: {
             enc_instr.id = InstrId::SH;
+            enc_instr.instr_t = InstrType::S;
+
             decode_s_type(raw_instr, enc_instr);
             break;
         }
         case Match::SW: {
             enc_instr.id = InstrId::SW;
+            enc_instr.instr_t = InstrType::S;
+
             decode_s_type(raw_instr, enc_instr);
             break;
         }
         case Match::SD: {
             enc_instr.id = InstrId::SD;
+            enc_instr.instr_t = InstrType::S;
+
             decode_s_type(raw_instr, enc_instr);
             break;
         }
@@ -360,31 +434,43 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         // B - type
         case Match::BEQ: {
             enc_instr.id = InstrId::BEQ;
+            enc_instr.instr_t = InstrType::B;
+
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BNE: {
             enc_instr.id = InstrId::BNE;
+            enc_instr.instr_t = InstrType::B;
+
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BLT: {
             enc_instr.id = InstrId::BLT;
+            enc_instr.instr_t = InstrType::B;
+
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BGE: {
             enc_instr.id = InstrId::BGE;
+            enc_instr.instr_t = InstrType::B;
+
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BLTU: {
             enc_instr.id = InstrId::BLTU;
+            enc_instr.instr_t = InstrType::B;
+
             decode_b_type(raw_instr, enc_instr);
             break;
         }
         case Match::BGEU: {
             enc_instr.id = InstrId::BGEU;
+            enc_instr.instr_t = InstrType::B;
+
             decode_b_type(raw_instr, enc_instr);
             break;
         }
@@ -392,11 +478,15 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         // U - type
         case Match::LUI: {
             enc_instr.id = InstrId::LUI;
+            enc_instr.instr_t = InstrType::U;
+
             decode_u_type(raw_instr, enc_instr);
             break;
         }
         case Match::AUIPC: {
             enc_instr.id = InstrId::AUIPC;
+            enc_instr.instr_t = InstrType::U;
+
             decode_u_type(raw_instr, enc_instr);
             break;
         }
@@ -404,6 +494,8 @@ void Decoder::decode_instruction(instr_t raw_instr, EncInstr &enc_instr) try {
         // J - type
         case Match::JAL: {
             enc_instr.id = InstrId::JAL;
+            enc_instr.instr_t = InstrType::J;
+
             decode_j_type(raw_instr, enc_instr);
             break;
         }
