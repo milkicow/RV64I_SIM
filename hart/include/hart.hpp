@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "common.hpp"
+#include "logger.hpp"
 #include "memory.hpp"
 #include "tlb.hpp"
 
@@ -37,6 +38,13 @@ class Hart final {
     void set_pc(addr_t pc) noexcept { m_pc = pc; }
     void set_next_pc(addr_t pc_next) noexcept { m_pc_next = pc_next; }
     void set_reg(reg_id_t reg_id, reg_t value) {
+        Logger &myLogger = Logger::getInstance();
+        std::string log_str{};
+        if (reg_id) {
+            log_str = fmt::format("\tx{}: {:x} -> {:x}", reg_id, m_regfile[reg_id], value);
+        }
+        myLogger.message(Logger::severity_level::trace, "", log_str);
+
         m_regfile[reg_id] = value;
         m_regfile[0] = 0;
     }
@@ -62,6 +70,12 @@ class Hart final {
         if (addr_page_offset + sizeof(ValType) > kPageSize) {
             std::runtime_error("Misaligned memory store");
         }
+
+        Logger &myLogger = Logger::getInstance();
+
+        std::string log_str{};
+        log_str = fmt::format("\tDATA_MEM[{:04x}] = {:x}", addr, value);
+        myLogger.message(Logger::severity_level::trace, "", log_str);
 
         auto phys_addr = m_mmu.translate(addr, MMU::Mode::Bare);
         m_mem.store<ValType>(phys_addr, value);

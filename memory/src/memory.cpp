@@ -109,11 +109,11 @@ void MMU::allocaPTEs(size_t vpn2_table_size, size_t vpn1_table_size, size_t vpn0
     m_vpn1_size = vpn1_table_size;
     m_vpn0_size = vpn0_table_size;
 
-    Logger &myLogger = Logger::getInstance();
+    // Logger &myLogger = Logger::getInstance();
 
     m_phys_memory.reservePages(m_satp_addr + 1 + m_vpn2_size + m_vpn2_size * m_vpn1_size);
-    myLogger.message(Logger::standard, "memory",
-                     fmt::format("page_counter: {:d}", m_phys_memory.getPageCounter()));
+    // myLogger.message(Logger::standard, "memory",
+    //                  fmt::format("page_counter: {:d}", m_phys_memory.getPageCounter()));
 }
 
 void MMU::fillPTEs(virtual_address_t virtual_address) {
@@ -128,12 +128,12 @@ void MMU::fillPTEs(virtual_address_t virtual_address) {
     physical_address_t vpn0_table_start =
         vpn1_table_start + kPageSize * m_vpn2_size + vpn2 * m_vpn2_size + vpn1 * kPageSize;
 
-    myLogger.message(Logger::standard, "memory",
-                     fmt::format("vpn2_table_start: {:#x}", vpn2_table_start));
-    myLogger.message(Logger::standard, "memory",
-                     fmt::format("vpn1_table_start: {:#x}", vpn1_table_start));
-    myLogger.message(Logger::standard, "memory",
-                     fmt::format("vpn0_table_start: {:#x}", vpn0_table_start));
+    // myLogger.message(Logger::standard, "memory",
+    //                  fmt::format("vpn2_table_start: {:#x}", vpn2_table_start));
+    // myLogger.message(Logger::standard, "memory",
+    //                  fmt::format("vpn1_table_start: {:#x}", vpn1_table_start));
+    // myLogger.message(Logger::standard, "memory",
+    //                  fmt::format("vpn0_table_start: {:#x}", vpn0_table_start));
 
     m_phys_memory.store<physical_address_t>(vpn2_table_start + vpn2 * sizeof(pte_t),
                                             vpn1_table_start);

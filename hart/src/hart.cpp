@@ -48,7 +48,7 @@ void Hart::load_elf_file(std::string &elf_file) {
         return segment->get_type() == ELFIO::PT_LOAD;
     };
 
-    Logger &myLogger = Logger::getInstance();
+    // Logger &myLogger = Logger::getInstance();
 
     std::vector<virtual_address_t> pages{};
 
@@ -62,11 +62,11 @@ void Hart::load_elf_file(std::string &elf_file) {
             ++i;
         }
 
-        myLogger.message(
-            Logger::standard, "hart",
-            fmt::format("segment virtual address: {:#x}", segment->get_virtual_address()));
-        myLogger.message(Logger::standard, "hart",
-                         fmt::format("segment size: {:#x}", segment->get_memory_size()));
+        // myLogger.message(
+        //     Logger::standard, "hart",
+        //     fmt::format("segment virtual address: {:#x}", segment->get_virtual_address()));
+        // myLogger.message(Logger::standard, "hart",
+        //                  fmt::format("segment size: {:#x}", segment->get_memory_size()));
 
         m_mem.store(segment->get_virtual_address(), segment->get_data(),
                     segment->get_memory_size());
@@ -80,12 +80,12 @@ void Hart::load_elf_file(std::string &elf_file) {
 
     std::tie(vpn2_table_size, vpn1_table_size, vpn0_table_size) = count_tree_size(pages);
 
-    myLogger.message(Logger::standard, "hart",
-                     fmt::format("vpn2_table_size: {:d}", vpn2_table_size));
-    myLogger.message(Logger::standard, "hart",
-                     fmt::format("vpn1_table_size: {:d}", vpn1_table_size));
-    myLogger.message(Logger::standard, "hart",
-                     fmt::format("vpn0_table_size: {:d}", vpn0_table_size));
+    // myLogger.message(Logger::standard, "hart",
+    //                  fmt::format("vpn2_table_size: {:d}", vpn2_table_size));
+    // myLogger.message(Logger::standard, "hart",
+    //                  fmt::format("vpn1_table_size: {:d}", vpn1_table_size));
+    // myLogger.message(Logger::standard, "hart",
+    //                  fmt::format("vpn0_table_size: {:d}", vpn0_table_size));
 
     m_mmu.allocaPTEs(vpn2_table_size, vpn1_table_size, vpn0_table_size);
 
@@ -93,11 +93,11 @@ void Hart::load_elf_file(std::string &elf_file) {
         m_mmu.fillPTEs(page);
     }
 
-    auto translated = m_mmu.translate(pages[0] + 256, MMU::Mode::Sv39);
-    myLogger.message(Logger::standard, "hart", fmt::format("translated: {:#x}", translated));
+    // auto translated = m_mmu.translate(pages[0] + 256, MMU::Mode::Sv39);
+    // myLogger.message(Logger::standard, "hart", fmt::format("translated: {:#x}", translated));
 
-    myLogger.message(Logger::standard, "hart",
-                     fmt::format("page_counter: {:d}", m_mem.getPageCounter()));
+    // myLogger.message(Logger::standard, "hart",
+    //                  fmt::format("page_counter: {:d}", m_mem.getPageCounter()));
 
     // for (auto &page : pages) {
     //     myLogger.message(Logger::standard, "hart",

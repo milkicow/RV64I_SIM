@@ -82,9 +82,19 @@ const std::array<Executor::executor_func_t, 51> Executor::functions{{
     [InstrId::ECALL] = execute_ecall,
 }};
 
+static void format_execute_instr(Hart &hart, const EncInstr *instruction) {
+    Logger &myLogger = Logger::getInstance();
+
+    auto str = fmt::format("[{:04x}]: {}", hart.get_pc(), instruction->format());
+    myLogger.message(Logger::severity_level::trace, "", str);
+}
+
 // R - type
 void Executor::execute_add(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) + hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
@@ -98,6 +108,8 @@ void Executor::execute_add(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_sub(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) - hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
@@ -111,6 +123,8 @@ void Executor::execute_sub(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_slt(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, (static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) <
                             static_cast<signed_reg_t>(hart.get_reg(instr.rs2))));
 
@@ -125,6 +139,8 @@ void Executor::execute_slt(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_sltu(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) < hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
@@ -138,6 +154,8 @@ void Executor::execute_sltu(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_xor(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) ^ hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
@@ -151,6 +169,8 @@ void Executor::execute_xor(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_sll(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) << bits<5, 0>(hart.get_reg(instr.rs2)));
 
     hart.set_pc(hart.get_pc_next());
@@ -164,6 +184,8 @@ void Executor::execute_sll(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_srl(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) >> bits<5, 0>(hart.get_reg(instr.rs2)));
 
     hart.set_pc(hart.get_pc_next());
@@ -177,6 +199,8 @@ void Executor::execute_srl(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_sra(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, static_cast<reg_t>(static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) >>
                                               bits<5, 0>(hart.get_reg(instr.rs2))));
 
@@ -191,6 +215,8 @@ void Executor::execute_sra(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_or(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) | hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
@@ -204,6 +230,8 @@ void Executor::execute_or(Hart &hart, const EncInstr *instructions, size_t instr
 
 void Executor::execute_and(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) & hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
@@ -217,6 +245,8 @@ void Executor::execute_and(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_addw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, sext<31>(hart.get_reg(instr.rs1) + hart.get_reg(instr.rs2)));
 
     hart.set_pc(hart.get_pc_next());
@@ -230,6 +260,8 @@ void Executor::execute_addw(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_sllw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd,
                  sext<31>(hart.get_reg(instr.rs1) << bits<4, 0>(hart.get_reg(instr.rs2))));
 
@@ -244,6 +276,8 @@ void Executor::execute_sllw(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_srlw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, sext<31>(bits<31, 0>(hart.get_reg(instr.rs1)) >>
                                     bits<4, 0>(hart.get_reg(instr.rs2))));
 
@@ -258,6 +292,8 @@ void Executor::execute_srlw(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_subw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, sext<31>(hart.get_reg(instr.rs1) - hart.get_reg(instr.rs2)));
 
     hart.set_pc(hart.get_pc_next());
@@ -271,6 +307,8 @@ void Executor::execute_subw(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_sraw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd,
                  sext<31>(static_cast<reg_t>(static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) >>
                                              bits<4, 0>(hart.get_reg(instr.rs2)))));
@@ -287,6 +325,8 @@ void Executor::execute_sraw(Hart &hart, const EncInstr *instructions, size_t ins
 // I - type
 void Executor::execute_jalr(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_pc_next());
     hart.set_next_pc((hart.get_reg(instr.rs1) + instr.imm) & ~uint64_t(1));
 
@@ -297,6 +337,9 @@ void Executor::execute_jalr(Hart &hart, const EncInstr *instructions, size_t ins
 void Executor::execute_ld(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint64_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, value);
 
@@ -312,6 +355,9 @@ void Executor::execute_ld(Hart &hart, const EncInstr *instructions, size_t instr
 void Executor::execute_lb(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint8_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, sext<7>(value));
 
@@ -327,6 +373,9 @@ void Executor::execute_lb(Hart &hart, const EncInstr *instructions, size_t instr
 void Executor::execute_lbu(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint8_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, value);
 
@@ -342,6 +391,9 @@ void Executor::execute_lbu(Hart &hart, const EncInstr *instructions, size_t inst
 void Executor::execute_lh(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint16_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, sext<15>(value));
 
@@ -357,6 +409,9 @@ void Executor::execute_lh(Hart &hart, const EncInstr *instructions, size_t instr
 void Executor::execute_lhu(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint16_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, value);
 
@@ -372,6 +427,9 @@ void Executor::execute_lhu(Hart &hart, const EncInstr *instructions, size_t inst
 void Executor::execute_lw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint32_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, sext<31>(value));
 
@@ -387,6 +445,9 @@ void Executor::execute_lw(Hart &hart, const EncInstr *instructions, size_t instr
 void Executor::execute_lwu(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     uint64_t value;
+
+    format_execute_instr(hart, &instr);
+
     hart.load<uint32_t>(hart.get_reg(instr.rs1) + instr.imm, value);
     hart.set_reg(instr.rd, value);
 
@@ -401,6 +462,9 @@ void Executor::execute_lwu(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_addi(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) + static_cast<signed_reg_t>(instr.imm));
 
     hart.set_pc(hart.get_pc_next());
@@ -414,6 +478,9 @@ void Executor::execute_addi(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_slti(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) <
                                static_cast<signed_reg_t>(instr.imm));
 
@@ -428,6 +495,9 @@ void Executor::execute_slti(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_sltiu(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) < instr.imm);
 
     hart.set_pc(hart.get_pc_next());
@@ -441,6 +511,9 @@ void Executor::execute_sltiu(Hart &hart, const EncInstr *instructions, size_t in
 
 void Executor::execute_andi(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) & instr.imm);
 
     hart.set_pc(hart.get_pc_next());
@@ -454,6 +527,9 @@ void Executor::execute_andi(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_ori(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) | instr.imm);
 
     hart.set_pc(hart.get_pc_next());
@@ -467,6 +543,9 @@ void Executor::execute_ori(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_xori(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) ^ instr.imm);
 
     hart.set_pc(hart.get_pc_next());
@@ -480,6 +559,9 @@ void Executor::execute_xori(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_slli(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) << bits<5, 0>(instr.imm));
 
     hart.set_pc(hart.get_pc_next());
@@ -493,6 +575,9 @@ void Executor::execute_slli(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_srli(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_reg(instr.rs1) >> bits<5, 0>(instr.imm));
 
     hart.set_pc(hart.get_pc_next());
@@ -506,6 +591,9 @@ void Executor::execute_srli(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_srai(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, static_cast<reg_t>(static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) >>
                                               bits<5, 0>(instr.imm)));
 
@@ -520,6 +608,9 @@ void Executor::execute_srai(Hart &hart, const EncInstr *instructions, size_t ins
 
 void Executor::execute_addiw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, sext<31>(hart.get_reg(instr.rs1) + instr.imm));
 
     hart.set_pc(hart.get_pc_next());
@@ -533,6 +624,9 @@ void Executor::execute_addiw(Hart &hart, const EncInstr *instructions, size_t in
 
 void Executor::execute_slliw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, sext<31>(hart.get_reg(instr.rs1) << bits<4, 0>(instr.imm)));
 
     hart.set_pc(hart.get_pc_next());
@@ -546,6 +640,9 @@ void Executor::execute_slliw(Hart &hart, const EncInstr *instructions, size_t in
 
 void Executor::execute_srliw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, sext<31>(bits<31, 0>(hart.get_reg(instr.rs1)) >> bits<4, 0>(instr.imm)));
 
     hart.set_pc(hart.get_pc_next());
@@ -559,6 +656,9 @@ void Executor::execute_srliw(Hart &hart, const EncInstr *instructions, size_t in
 
 void Executor::execute_sraiw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd,
                  sext<31>(static_cast<reg_t>(static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) >>
                                              bits<4, 0>(instr.imm))));
@@ -585,6 +685,8 @@ void Executor::execute_sb(Hart &hart, const EncInstr *instructions, size_t instr
     auto instr = instructions[instr_index];
     hart.store<uint8_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
 
+    format_execute_instr(hart, &instr);
+
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
 
@@ -597,6 +699,8 @@ void Executor::execute_sb(Hart &hart, const EncInstr *instructions, size_t instr
 void Executor::execute_sh(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     hart.store<uint16_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
+
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -611,6 +715,8 @@ void Executor::execute_sw(Hart &hart, const EncInstr *instructions, size_t instr
     auto instr = instructions[instr_index];
     hart.store<uint32_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
 
+    format_execute_instr(hart, &instr);
+
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
 
@@ -623,6 +729,8 @@ void Executor::execute_sw(Hart &hart, const EncInstr *instructions, size_t instr
 void Executor::execute_sd(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     hart.store<uint64_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
+
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -639,6 +747,7 @@ void Executor::execute_beq(Hart &hart, const EncInstr *instructions, size_t inst
     if (hart.get_reg(instr.rs1) == hart.get_reg(instr.rs2)) {
         hart.set_next_pc(hart.get_pc() + instr.imm);
     }
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -649,6 +758,7 @@ void Executor::execute_bne(Hart &hart, const EncInstr *instructions, size_t inst
     if (hart.get_reg(instr.rs1) != hart.get_reg(instr.rs2)) {
         hart.set_next_pc(hart.get_pc() + instr.imm);
     }
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -659,6 +769,7 @@ void Executor::execute_blt(Hart &hart, const EncInstr *instructions, size_t inst
         static_cast<signed_reg_t>(hart.get_reg(instr.rs2))) {
         hart.set_next_pc(hart.get_pc() + instr.imm);
     }
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -669,6 +780,7 @@ void Executor::execute_bltu(Hart &hart, const EncInstr *instructions, size_t ins
     if (hart.get_reg(instr.rs1) < hart.get_reg(instr.rs2)) {
         hart.set_next_pc(hart.get_pc() + instr.imm);
     }
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -679,6 +791,8 @@ void Executor::execute_bge(Hart &hart, const EncInstr *instructions, size_t inst
         static_cast<signed_reg_t>(hart.get_reg(instr.rs2))) {
         hart.set_next_pc(hart.get_pc() + instr.imm);
     }
+    format_execute_instr(hart, &instr);
+
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -688,6 +802,7 @@ void Executor::execute_bgeu(Hart &hart, const EncInstr *instructions, size_t ins
     if (hart.get_reg(instr.rs1) >= hart.get_reg(instr.rs2)) {
         hart.set_next_pc(hart.get_pc() + instr.imm);
     }
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -697,6 +812,8 @@ void Executor::execute_bgeu(Hart &hart, const EncInstr *instructions, size_t ins
 void Executor::execute_lui(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     hart.set_reg(instr.rd, instr.imm);
+
+    format_execute_instr(hart, &instr);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -709,6 +826,9 @@ void Executor::execute_lui(Hart &hart, const EncInstr *instructions, size_t inst
 
 void Executor::execute_auipc(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_pc() + instr.imm);
 
     hart.set_pc(hart.get_pc_next());
@@ -723,6 +843,9 @@ void Executor::execute_auipc(Hart &hart, const EncInstr *instructions, size_t in
 // J - type
 void Executor::execute_jal(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
+
+    format_execute_instr(hart, &instr);
+
     hart.set_reg(instr.rd, hart.get_pc_next());
 
     auto next_pc = hart.get_pc() + instr.imm;

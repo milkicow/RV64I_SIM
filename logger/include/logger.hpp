@@ -6,7 +6,7 @@
 
 class Logger {
    public:
-    enum severity_level { release, standard, verbose };
+    enum severity_level { release, trace, standard, verbose };
 
    private:
     struct SeverityType {
@@ -14,8 +14,9 @@ class Logger {
         std::string name;
     };
 
-    const std::array<Logger::SeverityType, 3> severity_levels{{
+    const std::array<Logger::SeverityType, 4> severity_levels{{
         {release, "release"},
+        {trace, "trace"},
         {standard, "standard"},
         {verbose, "verbose"},
     }};

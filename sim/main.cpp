@@ -19,8 +19,9 @@ int main(int argc, char **argv) {
     app.add_option("-l,--log_severity", log_level,
                    "Sets log level:\n"
                    "\t0: release\n"
-                   "\t1: standard\n"
-                   "\t2: verbose\n"
+                   "\t1: trace\n"
+                   "\t2: standard\n"
+                   "\t3: verbose\n"
                    "default = standard")
         ->default_val(Logger::severity_level::standard)
         ->check(CLI::Range(Logger::severity_level::release, Logger::severity_level::verbose));
@@ -29,7 +30,7 @@ int main(int argc, char **argv) {
 
     Logger &myLogger = Logger::getInstance();
     myLogger.init(log_level);
-    myLogger.message(Logger::release, "main", "RISV RV64_I simulator");
+    // myLogger.message(Logger::release, "main", "RISV RV64_I simulator");
 
     sim::Hart hart{elf_file};
 
@@ -39,14 +40,14 @@ int main(int argc, char **argv) {
     sim::Executor::run(hart, instr_counter);
     const auto end = std::chrono::steady_clock::now();
 
-    myLogger.message(Logger::severity_level::release, "main", hart.format_registers());
+    // myLogger.message(Logger::severity_level::release, "main", hart.format_registers());
 
     auto time = static_cast<std::chrono::duration<double>>(end - begin).count();
 
-    myLogger.message(Logger::release, "main", std::to_string(time) + " seconds");
-    myLogger.message(Logger::release, "main", std::to_string(instr_counter) + " instructions");
+    // myLogger.message(Logger::release, "main", std::to_string(time) + " seconds");
+    // myLogger.message(Logger::release, "main", std::to_string(instr_counter) + " instructions");
 
     auto ips = instr_counter / time / std::pow(10, 6);
-    myLogger.message(Logger::release, "main", std::to_string(ips) + " mips");
+    // myLogger.message(Logger::release, "main", std::to_string(ips) + " mips");
 
 }

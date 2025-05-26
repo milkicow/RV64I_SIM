@@ -33,7 +33,12 @@ void Logger::init(severity_level log_level) {
 
 void Logger::message(severity_level level, const std::string_view& module_name,
                      const std::string_view& message) {
+    std::string module_n{};
+
+    if (module_name.size() != 0) {
+        module_n = std::string{module_name} + ": ";
+    }
+
     BOOST_LOG_SEV(Logger::getLogger(), level)
-        << boost::log::add_value("log_level", severity_levels[level].name) << module_name << ": "
-        << message;
+        << boost::log::add_value("log_level", severity_levels[level].name) << module_n << message;
 }
