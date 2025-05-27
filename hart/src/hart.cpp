@@ -40,8 +40,8 @@ void Hart::load_elf_file(std::string &elf_file) {
     ELFIO::elfio reader;
     reader.load(elf_file);
 
-    if (reader.get_class() != ELFIO::ELFCLASS64) {
-        throw std::runtime_error{"Elf file class doesn't match with ELFCLASS64"};
+    if (!(reader.get_class() == ELFIO::ELFCLASS64 || reader.get_class() == ELFIO::ELFCLASS32)) {
+        throw std::runtime_error{"Elf file class doesn't match with ELFCLASS64 or ELFCLASS32"};
     }
 
     auto is_segment_loadable = [](const auto &segment) {

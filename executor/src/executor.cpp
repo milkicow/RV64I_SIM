@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <fmt/format.h>
 
-#include <fmt/format.h>
 #include <iostream>
 #include <sstream>
 
@@ -713,9 +712,9 @@ void Executor::execute_sh(Hart &hart, const EncInstr *instructions, size_t instr
 
 void Executor::execute_sw(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
-    hart.store<uint32_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
-
     format_execute_instr(hart, &instr);
+
+    hart.store<uint32_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -728,9 +727,10 @@ void Executor::execute_sw(Hart &hart, const EncInstr *instructions, size_t instr
 
 void Executor::execute_sd(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
-    hart.store<uint64_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
 
     format_execute_instr(hart, &instr);
+
+    hart.store<uint64_t>(hart.get_reg(instr.rs1) + instr.imm, hart.get_reg(instr.rs2));
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -763,6 +763,7 @@ void Executor::execute_bne(Hart &hart, const EncInstr *instructions, size_t inst
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
 }
+
 void Executor::execute_blt(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     if (static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) <
@@ -785,6 +786,7 @@ void Executor::execute_bltu(Hart &hart, const EncInstr *instructions, size_t ins
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
 }
+
 void Executor::execute_bge(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     if (static_cast<signed_reg_t>(hart.get_reg(instr.rs1)) >=
@@ -793,10 +795,10 @@ void Executor::execute_bge(Hart &hart, const EncInstr *instructions, size_t inst
     }
     format_execute_instr(hart, &instr);
 
-
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
 }
+
 void Executor::execute_bgeu(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
     if (hart.get_reg(instr.rs1) >= hart.get_reg(instr.rs2)) {
@@ -811,9 +813,9 @@ void Executor::execute_bgeu(Hart &hart, const EncInstr *instructions, size_t ins
 // U - type
 void Executor::execute_lui(Hart &hart, const EncInstr *instructions, size_t instr_index) {
     auto instr = instructions[instr_index];
-    hart.set_reg(instr.rd, instr.imm);
-
     format_execute_instr(hart, &instr);
+
+    hart.set_reg(instr.rd, instr.imm);
 
     hart.set_pc(hart.get_pc_next());
     hart.set_next_pc(hart.get_pc_next() + 4);
@@ -866,10 +868,11 @@ bool Executor::execute_BB(Hart &hart, BasicBlock &bb) {
     auto *bb_instructions = bb.getInstructions();
     auto bb_size = bb.getSize();
 
-    // myLogger.message(Logger::severity_level::standard, "Executor", fmt::format("bb size: {:d}", bb_size));
+    // myLogger.message(Logger::severity_level::standard, "Executor", fmt::format("bb size: {:d}",
+    // bb_size));
 
     auto &instruction = bb_instructions[0];
-    functions[instruction.id](hart, bb_instructions, 0); // start execute instructions in bb
+    functions[instruction.id](hart, bb_instructions, 0);  // start execute instructions in bb
 
     // myLogger.message(Logger::severity_level::standard, "Executor", "end BB execution");
     return true;

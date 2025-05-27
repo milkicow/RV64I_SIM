@@ -39,11 +39,10 @@ class Hart final {
     void set_next_pc(addr_t pc_next) noexcept { m_pc_next = pc_next; }
     void set_reg(reg_id_t reg_id, reg_t value) {
         Logger &myLogger = Logger::getInstance();
-        std::string log_str{};
         if (reg_id) {
-            log_str = fmt::format("\tx{}: {:x} -> {:x}", reg_id, m_regfile[reg_id], value);
+            std::string log_str = fmt::format("\tx{}: {:x}", reg_id, value);
+            myLogger.message(Logger::severity_level::trace, "", log_str);
         }
-        myLogger.message(Logger::severity_level::trace, "", log_str);
 
         m_regfile[reg_id] = value;
         m_regfile[0] = 0;
