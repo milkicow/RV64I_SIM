@@ -40,7 +40,7 @@ class Hart final {
     void set_reg(reg_id_t reg_id, reg_t value) {
         Logger &myLogger = Logger::getInstance();
         if (reg_id) {
-            std::string log_str = fmt::format("\tx{}: {:x}", reg_id, value);
+            std::string log_str = fmt::format("\tx{}: {:x}", reg_id, static_cast<uint32_t>(value));
             myLogger.message(Logger::severity_level::trace, "", log_str);
         }
 
